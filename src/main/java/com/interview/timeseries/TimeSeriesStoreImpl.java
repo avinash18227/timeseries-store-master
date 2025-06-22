@@ -26,6 +26,7 @@ public class TimeSeriesStoreImpl implements TimeSeriesStore {
     
     // TODO: Define persistence mechanism
     private String fileName = "fileTimeSeries.ser";
+    SaveData saveData = new SaveToFile();
 
     @Override
     public boolean insert(long timestamp, String metric, double value, Map<String, String> tags) {
@@ -65,13 +66,15 @@ public class TimeSeriesStoreImpl implements TimeSeriesStore {
     @Override
     public boolean initialize() {
         // TODO: Implement initialization
-        return writeToMemeory(); // Placeholder
+//        return writeToMemeory(); // Placeholder
+        return saveData.writeToMemeory(fileName,dataPoints,this);
     }
     
     @Override
     public boolean shutdown() {
         // TODO: Implement shutdown
-        return writeToFile(); // Placeholder
+//        return writeToFile(); // Placeholder
+        return saveData.writeToPersistentMemory(fileName,dataPoints);
     }
     
     // TODO: Add helper methods as needed
@@ -97,36 +100,37 @@ public class TimeSeriesStoreImpl implements TimeSeriesStore {
         }
         return list;
     }
-    private boolean writeToFile(){
-        try (ObjectOutputStream file = new ObjectOutputStream(new FileOutputStream(fileName))) {
-            for(Map.Entry<String,TreeMap<Long,List<DataPoint>>> hashMap : dataPoints.entrySet()){
-                for(Map.Entry<Long,List<DataPoint>> treeMap : hashMap.getValue().entrySet()){
-                    for(DataPoint point : treeMap.getValue()){
-                        file.writeObject(point);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-    private boolean writeToMemeory(){
-        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName))) {
-            while (true) {
-                try {
-                    DataPoint point = (DataPoint) in.readObject();
-//                    System.out.println("writeToMemeory "+point);
-                    insert(point.getTimestamp(), point.getMetric(),point.getValue(),point.getTags());
-                } catch (Exception e) {
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
+    // we can use interface for writing in a file or DB
+//    private boolean writeToFile(){
+//        try (ObjectOutputStream file = new ObjectOutputStream(new FileOutputStream(fileName))) {
+//            for(Map.Entry<String,TreeMap<Long,List<DataPoint>>> hashMap : dataPoints.entrySet()){
+//                for(Map.Entry<Long,List<DataPoint>> treeMap : hashMap.getValue().entrySet()){
+//                    for(DataPoint point : treeMap.getValue()){
+//                        file.writeObject(point);
+//                    }
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+//        return true;
+//    }
+//    private boolean writeToMemeory(){
+//        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName))) {
+//            while (true) {
+//                try {
+//                    DataPoint point = (DataPoint) in.readObject();
+////                    System.out.println("writeToMemeory "+point);
+//                    insert(point.getTimestamp(), point.getMetric(),point.getValue(),point.getTags());
+//                } catch (Exception e) {
+//                    break;
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+//        return true;
+//    }
 }
