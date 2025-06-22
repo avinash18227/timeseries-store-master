@@ -43,7 +43,7 @@ public class Main {
             // Query with filters
             Map<String, String> filters = new HashMap<>();
             filters.put("host", "server1");
-//            filters.put("host1", "server2");
+//            filters.put("datacenter", "us-west8");
             results = store.query("cpu.usage", now - 1000, now + 1000, filters);
             System.out.println("Filtered query results: " + results);
         } catch (Exception e) {

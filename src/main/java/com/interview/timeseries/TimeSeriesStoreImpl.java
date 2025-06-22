@@ -86,6 +86,7 @@ public class TimeSeriesStoreImpl implements TimeSeriesStore {
                         if (!d.getTags().containsKey(filter.getKey()) ||
                                 !d.getTags().get(filter.getKey()).equals(filter.getValue())) {
                             add = false;
+                            break;
                         }
                     }
                 }
